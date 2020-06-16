@@ -46,7 +46,8 @@ class ApplicationLine extends React.Component<LineProps, object> {
             <span>{extractHostname(this.props.link)}</span>
           </a>
         }
-        <button onClick={this.handleClick}>delete</button>
+        <button className="deleteButton" onClick={this.handleClick}>
+        </button>
       </div>
     );
   }
