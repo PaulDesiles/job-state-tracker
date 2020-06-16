@@ -36,6 +36,7 @@ class Organizer extends React.Component<OrganizerProps, OrganizerState> {
 
     this.addApplication = this.addApplication.bind(this);
     this.deleteApplication = this.deleteApplication.bind(this);
+    this.changeApplicationState = this.changeApplicationState.bind(this);
     this.updateStoredData = this.updateStoredData.bind(this);
   }
 
@@ -62,6 +63,23 @@ class Organizer extends React.Component<OrganizerProps, OrganizerState> {
     );
   }
 
+  changeApplicationState(id: number, applicationState: ApplicationState) {
+    this.setState(
+      state => ({
+        applications: state.applications.map(app => {
+          if (app.id === id) {
+            const copy: Application = {...app};
+            copy.state = applicationState;
+            return copy;
+          } else {
+            return app;
+          }
+        })
+      }),
+      () => this.updateStoredData()
+    );
+  }
+
   updateStoredData() {
     localStorage.setItem('applications', JSON.stringify(this.state.applications));
   }
@@ -70,7 +88,8 @@ class Organizer extends React.Component<OrganizerProps, OrganizerState> {
     const applications = this.state.applications.map(data => 
       <ApplicationLine
         key={data.id}
-        onClick={this.deleteApplication}
+        onDelete={this.deleteApplication}
+        onStateChange={this.changeApplicationState}
         {...data}
       />
     );

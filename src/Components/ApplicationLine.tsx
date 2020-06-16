@@ -1,25 +1,14 @@
 import React from 'react';
 import {Application, ApplicationState, getStateIcon} from './Application';
-import Select from 'react-select';
+import Select, {ValueType} from 'react-select';
 
 interface LineProps extends Application {
-  onClick: (id: number) => void
+  onDelete: (id: number) => void,
+  onStateChange: (id: number, state: ApplicationState) => void
 }
 
-function extractHostname(url?: string) {
-  if (!url)
-    return '';
-
-  var hostname;
-  if (url.indexOf("//") > -1) {
-      hostname = url.split('/')[2];
-  }
-  else {
-      hostname = url.split('/')[0];
-  }
-  hostname = hostname.split(':')[0];
-  hostname = hostname.split('?')[0];
-  return hostname;
+interface LineState {
+  applicationState: ApplicationState
 }
 
 interface stateOption {
@@ -28,14 +17,21 @@ interface stateOption {
   icon: string
 }
 
-class ApplicationLine extends React.Component<LineProps, object> {
+class ApplicationLine extends React.Component<LineProps, LineState> {
   constructor(props: LineProps) {
     super(props);
-    this.handleClick = this.handleClick.bind(this);
+    this.handleDelete = this.handleDelete.bind(this);
+    this.handleStateChange = this.handleStateChange.bind(this);
   }
 
-  handleClick(event: React.MouseEvent<HTMLButtonElement, MouseEvent>) {
-    this.props.onClick(this.props.id);
+  handleDelete(event: React.MouseEvent<HTMLButtonElement, MouseEvent>) {
+    this.props.onDelete(this.props.id);
+  }
+
+  handleStateChange(option: ValueType<stateOption>) {
+    if (option) {
+      this.props.onStateChange(this.props.id, (option as stateOption).value);
+    }
   }
 
   render() {
@@ -70,6 +66,7 @@ class ApplicationLine extends React.Component<LineProps, object> {
             options={stateOptions}
             defaultValue={selectedOption}
             formatOptionLabel={optionformatter}
+            onChange={this.handleStateChange}
           />
         </div>
 
@@ -83,12 +80,28 @@ class ApplicationLine extends React.Component<LineProps, object> {
         </div>
 
         <div className="delete">
-          <button className="deleteButton" onClick={this.handleClick}>
+          <button className="deleteButton" onClick={this.handleDelete}>
           </button>
         </div>
       </div>
     );
   }
+}
+
+function extractHostname(url?: string) {
+  if (!url)
+    return '';
+
+  var hostname;
+  if (url.indexOf("//") > -1) {
+      hostname = url.split('/')[2];
+  }
+  else {
+      hostname = url.split('/')[0];
+  }
+  hostname = hostname.split(':')[0];
+  hostname = hostname.split('?')[0];
+  return hostname;
 }
 
 export default ApplicationLine;
