@@ -1,11 +1,12 @@
 import React, {Fragment} from 'react';
 import AddApplication from './AddApplication';
 import ApplicationLine from './ApplicationLine';
-import {Application, ApplicationData} from './Application';
+import {Application, ApplicationData, ApplicationState} from './Application';
 
 const defaultData = [
-  {id:0, name: "Space X", state:"sent"},
-  {id:1, name: "ESA", state:"scheduled"}
+  {id:0, name: "Space X", link: "https://www.spacex.com/careers/index.html", state: ApplicationState.Sent},
+  {id:1, name: "ESA", link: "http://www.esa.int/About_Us/Careers_at_ESA", state: ApplicationState.Waiting},
+  {id:2, name: "NASA", link: "https://www.nasa.gov/careers", state: ApplicationState.Todo}
 ];
 
 interface OrganizerProps { }

@@ -25,6 +25,30 @@ h4 {
   min-width: 100px;
 }
 
+.application .icon {
+  font-size: 20pt;
+  min-width: 30pt;
+}
+
+.application .stateName {
+  min-width: 150px;
+}
+
+.application a {
+  color: #333;
+  font-size: 11pt;
+}
+
+.application a span {
+  text-decoration: underline;
+}
+
+.application a .icon {
+  text-decoration: none;
+  font-size: 11pt;
+  min-width: 15pt;
+}
+
 .addForm {
   margin-top: 20px;
 }
@@ -37,3 +61,8 @@ h4 {
   margin-left: 10px;
   width: 120px;
 }
+
+.icon {
+  font-family: 'Segoe UI Emoji';
+}
+

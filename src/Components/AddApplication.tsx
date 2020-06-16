@@ -1,5 +1,5 @@
 import React from 'react';
-import {ApplicationData} from './Application';
+import {ApplicationState, ApplicationData} from './Application';
 
 export interface AddProps {
   onAddApplication: (data: ApplicationData) => void
@@ -10,10 +10,12 @@ class AddApplication extends React.Component<AddProps, ApplicationData> {
     super(props);
     this.state = {
       name: '',
-      state: 'todo'
+      link: '',
+      state: ApplicationState.Todo
     };
 
     this.handleNameChange = this.handleNameChange.bind(this);
+    this.handleLinkChange = this.handleLinkChange.bind(this);
     this.handleStateChange = this.handleStateChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
   }
@@ -24,10 +26,19 @@ class AddApplication extends React.Component<AddProps, ApplicationData> {
     });
   }
 
-  handleStateChange(event: React.ChangeEvent<HTMLInputElement>) {
+  handleLinkChange(event: React.ChangeEvent<HTMLInputElement>) {
     this.setState({
-      state: event.target.value
+      link: event.target.value
     });
+  }
+
+  handleStateChange(event: React.ChangeEvent<HTMLSelectElement>) {
+    const value = parseInt(event.target.value);
+    if (value) {
+      this.setState({
+        state: value
+      });
+    }
   }
 
   handleSubmit(event: React.FormEvent<HTMLElement>) {
@@ -40,12 +51,22 @@ class AddApplication extends React.Component<AddProps, ApplicationData> {
       <form className="addForm" onSubmit={this.handleSubmit}>
         <label>
           Name:
-          <input type="text" name="name" value={this.state.name} onChange={this.handleNameChange} />
+          <input type="text" value={this.state.name} onChange={this.handleNameChange} />
+        </label>
+
+        <label>
+          Job offer link:
+          <input type="text" value={this.state.link} onChange={this.handleLinkChange} />
         </label>
 
         <label>
           State:
-          <input type="text" name="state" value={this.state.state} onChange={this.handleStateChange} />
+          <select value={this.state.state} onChange={this.handleStateChange}>
+          {
+            (Object.values(ApplicationState).filter(key => typeof key === 'number') as ApplicationState[])
+            .map(key => <option key={key} value={key}>{ApplicationState[key]}</option>)
+          }
+          </select>
         </label>
         
         <input type="submit" value="Add" />
