@@ -1,5 +1,6 @@
 import React from 'react';
 import {Application, ApplicationState, getStateIcon} from './Application';
+import Select from 'react-select';
 
 interface LineProps extends Application {
   onClick: (id: number) => void
@@ -21,6 +22,11 @@ function extractHostname(url?: string) {
   return hostname;
 }
 
+interface stateOption {
+  value: ApplicationState,
+  label: string,
+  icon: string
+}
 
 class ApplicationLine extends React.Component<LineProps, object> {
   constructor(props: LineProps) {
@@ -33,21 +39,53 @@ class ApplicationLine extends React.Component<LineProps, object> {
   }
 
   render() {
-    let stateIcon = getStateIcon(this.props.state);
-    let stateName = ApplicationState[this.props.state];
+    const states = Object.values(ApplicationState).filter(key => typeof key === 'number') as ApplicationState[];
+    const stateOptions: Array<stateOption> = states.map(state => ({
+      value: state,
+      label: ApplicationState[state],
+      icon: getStateIcon(state)
+    }));
+
+    const selectedOption = stateOptions.find(o => o.value === this.props.state);
+
+    const optionformatter = (option: stateOption) => (
+      <div className="optionContainer">
+        <span className="icon">{option.icon}</span>
+        <span>{option.label}</span>
+      </div>
+    );
+
+    const labelId = 'linkLabel' + this.props.id;
+    const hostName = extractHostname(this.props.link);
+
     return (
       <div className="application">
-        <span>{this.props.name}</span>
-        <span className="icon" role="img" aria-label={stateName}>{stateIcon}</span>
-        <span className="stateName">{stateName}</span>
-        {this.props.link &&
-          <a href={this.props.link}>
-            <span className="icon" role="img" aria-label="link">🔗</span>
-            <span>{extractHostname(this.props.link)}</span>
-          </a>
-        }
-        <button className="deleteButton" onClick={this.handleClick}>
-        </button>
+        <div className="title">
+          <span>{this.props.name}</span>
+        </div>
+        
+        <div className="state">
+          <Select
+            className="stateSelector"
+            options={stateOptions}
+            defaultValue={selectedOption}
+            formatOptionLabel={optionformatter}
+          />
+        </div>
+
+        <div className="link">
+          {this.props.link &&
+            <a href={this.props.link}>
+              <span className="icon" role="img" aria-labelledby={labelId}>🔗</span>
+              <span className="linkLabel" id={labelId}>{hostName}</span>
+            </a>
+          }
+        </div>
+
+        <div className="delete">
+          <button className="deleteButton" onClick={this.handleClick}>
+          </button>
+        </div>
       </div>
     );
   }

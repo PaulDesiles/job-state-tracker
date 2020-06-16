@@ -16,7 +16,6 @@ class AddApplication extends React.Component<AddProps, ApplicationData> {
 
     this.handleNameChange = this.handleNameChange.bind(this);
     this.handleLinkChange = this.handleLinkChange.bind(this);
-    this.handleStateChange = this.handleStateChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
   }
 
@@ -30,15 +29,6 @@ class AddApplication extends React.Component<AddProps, ApplicationData> {
     this.setState({
       link: event.target.value
     });
-  }
-
-  handleStateChange(event: React.ChangeEvent<HTMLSelectElement>) {
-    const value = parseInt(event.target.value);
-    if (value) {
-      this.setState({
-        state: value
-      });
-    }
   }
 
   handleSubmit(event: React.FormEvent<HTMLElement>) {
@@ -59,16 +49,6 @@ class AddApplication extends React.Component<AddProps, ApplicationData> {
           <input type="text" value={this.state.link} onChange={this.handleLinkChange} />
         </label>
 
-        <label>
-          State:
-          <select value={this.state.state} onChange={this.handleStateChange}>
-          {
-            (Object.values(ApplicationState).filter(key => typeof key === 'number') as ApplicationState[])
-            .map(key => <option key={key} value={key}>{ApplicationState[key]}</option>)
-          }
-          </select>
-        </label>
-        
         <input type="submit" value="Add" />
       </form>
     );
