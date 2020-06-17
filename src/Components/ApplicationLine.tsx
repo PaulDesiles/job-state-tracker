@@ -56,11 +56,9 @@ class ApplicationLine extends React.Component<LineProps, LineState> {
 
     return (
       <div className="application">
-        <div className="title">
+        <div className="applicationContent">
           <span>{this.props.name}</span>
-        </div>
-        
-        <div className="state">
+          
           <Select
             className="stateSelector"
             options={stateOptions}
@@ -68,21 +66,18 @@ class ApplicationLine extends React.Component<LineProps, LineState> {
             formatOptionLabel={optionformatter}
             onChange={this.handleStateChange}
           />
+
+          <div className="link">
+            {this.props.link &&
+              <a href={this.props.link}>
+                <span className="icon" role="img" aria-labelledby={labelId}>🔗</span>
+                <span className="linkLabel" id={labelId}>{hostName}</span>
+              </a>
+            }
+          </div>
         </div>
 
-        <div className="link">
-          {this.props.link &&
-            <a href={this.props.link}>
-              <span className="icon" role="img" aria-labelledby={labelId}>🔗</span>
-              <span className="linkLabel" id={labelId}>{hostName}</span>
-            </a>
-          }
-        </div>
-
-        <div className="delete">
-          <button className="deleteButton" onClick={this.handleDelete}>
-          </button>
-        </div>
+        <button className="deleteButton" onClick={this.handleDelete}></button>
       </div>
     );
   }
