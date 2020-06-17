@@ -1,23 +1,23 @@
 {
   "files": {
-    "main.css": "/react-gh-pages/static/css/main.dbf8209d.chunk.css",
-    "main.js": "/react-gh-pages/static/js/main.dc49834d.chunk.js",
-    "main.js.map": "/react-gh-pages/static/js/main.dc49834d.chunk.js.map",
-    "runtime-main.js": "/react-gh-pages/static/js/runtime-main.828eca54.js",
-    "runtime-main.js.map": "/react-gh-pages/static/js/runtime-main.828eca54.js.map",
-    "static/js/2.abbc1929.chunk.js": "/react-gh-pages/static/js/2.abbc1929.chunk.js",
-    "static/js/2.abbc1929.chunk.js.map": "/react-gh-pages/static/js/2.abbc1929.chunk.js.map",
-    "index.html": "/react-gh-pages/index.html",
-    "precache-manifest.b1ff8472eb23ff7b5f0e5c4d697bb5f5.js": "/react-gh-pages/precache-manifest.b1ff8472eb23ff7b5f0e5c4d697bb5f5.js",
-    "service-worker.js": "/react-gh-pages/service-worker.js",
-    "static/css/main.dbf8209d.chunk.css.map": "/react-gh-pages/static/css/main.dbf8209d.chunk.css.map",
-    "static/js/2.abbc1929.chunk.js.LICENSE.txt": "/react-gh-pages/static/js/2.abbc1929.chunk.js.LICENSE.txt",
-    "static/media/App.css": "/react-gh-pages/static/media/cross.c2c62304.svg"
+    "main.css": "/job-state-tracker/static/css/main.e66b3a35.chunk.css",
+    "main.js": "/job-state-tracker/static/js/main.cfd02037.chunk.js",
+    "main.js.map": "/job-state-tracker/static/js/main.cfd02037.chunk.js.map",
+    "runtime-main.js": "/job-state-tracker/static/js/runtime-main.465f9503.js",
+    "runtime-main.js.map": "/job-state-tracker/static/js/runtime-main.465f9503.js.map",
+    "static/js/2.abbc1929.chunk.js": "/job-state-tracker/static/js/2.abbc1929.chunk.js",
+    "static/js/2.abbc1929.chunk.js.map": "/job-state-tracker/static/js/2.abbc1929.chunk.js.map",
+    "index.html": "/job-state-tracker/index.html",
+    "precache-manifest.ec67fd61f43e639b29fdcd365df540e6.js": "/job-state-tracker/precache-manifest.ec67fd61f43e639b29fdcd365df540e6.js",
+    "service-worker.js": "/job-state-tracker/service-worker.js",
+    "static/css/main.e66b3a35.chunk.css.map": "/job-state-tracker/static/css/main.e66b3a35.chunk.css.map",
+    "static/js/2.abbc1929.chunk.js.LICENSE.txt": "/job-state-tracker/static/js/2.abbc1929.chunk.js.LICENSE.txt",
+    "static/media/App.css": "/job-state-tracker/static/media/cross.c2c62304.svg"
   },
   "entrypoints": [
-    "static/js/runtime-main.828eca54.js",
+    "static/js/runtime-main.465f9503.js",
     "static/js/2.abbc1929.chunk.js",
-    "static/css/main.dbf8209d.chunk.css",
-    "static/js/main.dc49834d.chunk.js"
+    "static/css/main.e66b3a35.chunk.css",
+    "static/js/main.cfd02037.chunk.js"
   ]
 }
