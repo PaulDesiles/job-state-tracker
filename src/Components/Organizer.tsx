@@ -2,6 +2,7 @@ import React, {Fragment} from 'react';
 import AddApplication from './AddApplication';
 import ApplicationLine from './ApplicationLine';
 import {Application, ApplicationData, ApplicationState} from './Application';
+import { CSSTransition, TransitionGroup } from 'react-transition-group';
 
 const defaultData = [
   {id:0, name: "Space X", link: "https://www.spacex.com/careers/index.html", state: ApplicationState.Sent},
@@ -86,17 +87,26 @@ class Organizer extends React.Component<OrganizerProps, OrganizerState> {
 
   render() {
     const applications = this.state.applications.map(data => 
-      <ApplicationLine
+      <CSSTransition
         key={data.id}
-        onDelete={this.deleteApplication}
-        onStateChange={this.changeApplicationState}
-        {...data}
-      />
+        timeout={{
+          enter: 500,
+          exit: 300
+        }}
+        classNames="item">
+        <ApplicationLine
+          onDelete={this.deleteApplication}
+          onStateChange={this.changeApplicationState}
+          {...data}
+        />
+      </CSSTransition>
     );
 
     return (
       <Fragment>
-        {applications}
+        <TransitionGroup>
+          {applications}
+        </TransitionGroup>
         <AddApplication onAddApplication={this.addApplication} />
       </Fragment>
     );

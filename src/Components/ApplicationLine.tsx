@@ -44,15 +44,16 @@ class ApplicationLine extends React.Component<LineProps, LineState> {
 
     const selectedOption = stateOptions.find(o => o.value === this.props.state);
 
-    const optionformatter = (option: stateOption) => (
-      <div className="optionContainer">
-        <span className="icon">{option.icon}</span>
-        <span>{option.label}</span>
-      </div>
-    );
+    const optionformatter = (option: stateOption) =>  {
+      const optionId = "option" + option.value;
+      return (<div className="optionContainer">
+        <span className="icon" role="img" aria-labelledby={optionId}>{option.icon}</span>
+        <span id={optionId}>{option.label}</span>
+      </div>);
+    }
 
     const labelId = 'linkLabel' + this.props.id;
-    const hostName = extractHostname(this.props.link);
+    const displayedUrl = simplifyUrl(this.props.link);
 
     return (
       <div className="application">
@@ -71,7 +72,7 @@ class ApplicationLine extends React.Component<LineProps, LineState> {
             {this.props.link &&
               <a href={this.props.link}>
                 <span className="icon" role="img" aria-labelledby={labelId}>🔗</span>
-                <span className="linkLabel" id={labelId}>{hostName}</span>
+                <span className="linkLabel" id={labelId}>{displayedUrl}</span>
               </a>
             }
           </div>
@@ -83,20 +84,11 @@ class ApplicationLine extends React.Component<LineProps, LineState> {
   }
 }
 
-function extractHostname(url?: string) {
+function simplifyUrl(url?: string) {
   if (!url)
     return '';
 
-  var hostname;
-  if (url.indexOf("//") > -1) {
-      hostname = url.split('/')[2];
-  }
-  else {
-      hostname = url.split('/')[0];
-  }
-  hostname = hostname.split(':')[0];
-  hostname = hostname.split('?')[0];
-  return hostname;
+  return url.replace('https://', '').replace('http://', '');
 }
 
 export default ApplicationLine;

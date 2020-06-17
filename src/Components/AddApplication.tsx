@@ -39,11 +39,11 @@ class AddApplication extends React.Component<AddProps, ApplicationData> {
   render() {
     return (
       <form className="addForm" onSubmit={this.handleSubmit}>
-        <label>Name:</label>
-        <input type="text" value={this.state.name} onChange={this.handleNameChange} />
+        <label htmlFor="name">Name:</label>
+        <input id="name" type="text" value={this.state.name} onChange={this.handleNameChange} />
 
-        <label>Job offer link:</label>
-        <input type="text" value={this.state.link} onChange={this.handleLinkChange} />
+        <label htmlFor="link">Job offer link:</label>
+        <input id="link" type="text" value={this.state.link} onChange={this.handleLinkChange} />
         
         <input type="submit" value="Add" />
       </form>
