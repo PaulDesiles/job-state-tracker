@@ -5,14 +5,16 @@ export interface AddProps {
   onAddApplication: (data: ApplicationData) => void
 }
 
+const defaultState = {
+  name: '',
+  link: '',
+  state: ApplicationState.Todo
+};
+
 class AddApplication extends React.Component<AddProps, ApplicationData> {
   constructor(props: AddProps) {
     super(props);
-    this.state = {
-      name: '',
-      link: '',
-      state: ApplicationState.Todo
-    };
+    this.state = defaultState;
 
     this.handleNameChange = this.handleNameChange.bind(this);
     this.handleLinkChange = this.handleLinkChange.bind(this);
@@ -32,7 +34,12 @@ class AddApplication extends React.Component<AddProps, ApplicationData> {
   }
 
   handleSubmit(event: React.FormEvent<HTMLElement>) {
-    this.props.onAddApplication(this.state);
+    this.props.onAddApplication({
+      name: this.state.name,
+      link: this.state.link,
+      state: ApplicationState.Todo
+    });
+    this.setState(defaultState);
     event.preventDefault();
   }
 
