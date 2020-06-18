@@ -66,6 +66,8 @@ class ApplicationLine extends React.Component<LineProps, LineState> {
             defaultValue={selectedOption}
             formatOptionLabel={optionformatter}
             onChange={this.handleStateChange}
+            isSearchable={false}
+            menuPlacement="auto"
           />
 
           <div className="link">
