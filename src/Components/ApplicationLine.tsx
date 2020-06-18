@@ -56,7 +56,7 @@ class ApplicationLine extends React.Component<LineProps, LineState> {
     const displayedUrl = simplifyUrl(this.props.link);
 
     return (
-      <div className="application">
+      <div className={`application app${ApplicationState[this.props.state]}`}>
         <div className="applicationContent">
           <span>{this.props.name}</span>
           

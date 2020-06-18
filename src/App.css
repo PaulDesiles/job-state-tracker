@@ -38,6 +38,18 @@ h4 {
   column-gap: 10px;
 }
 
+.appRefused {
+  background: #ccc;
+}
+
+.appWaiting {
+  background: #b9e17a;
+}
+
+.appAccepted {
+  background: #83bd29;
+}
+
 .applicationContent {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
