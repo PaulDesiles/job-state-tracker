@@ -28,12 +28,12 @@ export interface ApplicationData {
 }
 
 export interface Application extends ApplicationData {
-	id: number
+	id: string
 }
 
 export interface LineProps extends Application {
-  onDelete: (id: number) => void,
-  onStateChange: (id: number, state: ApplicationState) => void
+  onDelete: (id: string) => void,
+  onStateChange: (id: string, state: ApplicationState) => void
 }
 
 export interface LineState {

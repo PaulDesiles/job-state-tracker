@@ -4,20 +4,20 @@ import {Application, ApplicationData, ApplicationState} from './interfaces';
 import { CSSTransition, TransitionGroup } from 'react-transition-group';
 import { DragDropContext, Droppable, DropResult } from 'react-beautiful-dnd';
 import OrganizerItem from './OrganizerItem';
+import { v4 as uuidv4 } from 'uuid';
 
 const defaultData = [
-  {id:0, name: "Space X", link: "https://www.spacex.com/careers/index.html", state: ApplicationState.Sent},
-  {id:1, name: "ESA", link: "http://www.esa.int/About_Us/Careers_at_ESA", state: ApplicationState.Waiting},
-  {id:2, name: "NASA", link: "https://www.nasa.gov/careers", state: ApplicationState.Todo}
+  {id:'9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6a', name: "Space X", link: "https://www.spacex.com/careers/index.html", state: ApplicationState.Sent},
+  {id:'9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6b', name: "ESA", link: "http://www.esa.int/About_Us/Careers_at_ESA", state: ApplicationState.Waiting},
+  {id:'9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6c', name: "NASA", link: "https://www.nasa.gov/careers", state: ApplicationState.Todo}
 ];
 
 interface OrganizerProps { }
 
 interface OrganizerState {
-  applications: Array<Application>
+  applications: Application[]
 }
 
-let appCount = 0;
 class Organizer extends React.Component<OrganizerProps, OrganizerState> {
   constructor(props: OrganizerProps) {
     super(props);
@@ -30,7 +30,12 @@ class Organizer extends React.Component<OrganizerProps, OrganizerState> {
       localStorage.setItem('applications', JSON.stringify(apps));
     }
 
-    appCount = Math.max(0, ...apps.map(app => app.id));
+    // transform old ids
+    apps.forEach(app => {
+      if (typeof(app.id) === 'number') {
+        app.id = uuidv4();
+      }
+    });
 
     this.state = {
       applications: apps
@@ -45,7 +50,7 @@ class Organizer extends React.Component<OrganizerProps, OrganizerState> {
 
   addApplication(data: ApplicationData) {
     const newElement: Application = {
-      id: ++appCount,
+      id: uuidv4(),
       ...data
     };
 
@@ -57,7 +62,7 @@ class Organizer extends React.Component<OrganizerProps, OrganizerState> {
     );
   }
 
-  deleteApplication(id: number) {
+  deleteApplication(id: string) {
     this.setState(
       state => ({
         applications: state.applications.filter(app => app.id !== id)
@@ -66,17 +71,15 @@ class Organizer extends React.Component<OrganizerProps, OrganizerState> {
     );
   }
 
-  changeApplicationState(id: number, applicationState: ApplicationState) {
+  changeApplicationState(id: string, applicationState: ApplicationState) {
     this.setState(
       state => ({
         applications: state.applications.map(app => {
           if (app.id === id) {
-            const copy: Application = {...app};
-            copy.state = applicationState;
-            return copy;
-          } else {
-            return app;
+            return {...app, state: applicationState};
           }
+
+          return app;
         })
       }),
       () => this.updateStoredData()
@@ -93,9 +96,10 @@ class Organizer extends React.Component<OrganizerProps, OrganizerState> {
       const removed = applications.splice(result.source.index, 1)[0];
       applications.splice(result.destination.index, 0, removed);
 
-      this.setState({
-        applications
-      });
+      this.setState(
+        { applications },
+        () => this.updateStoredData()
+      );
     }
   }
 
