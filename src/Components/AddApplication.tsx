@@ -1,5 +1,5 @@
 import React from 'react';
-import {ApplicationState, ApplicationData} from './Application';
+import {ApplicationState, ApplicationData} from './interfaces';
 
 export interface AddProps {
   onAddApplication: (data: ApplicationData) => void

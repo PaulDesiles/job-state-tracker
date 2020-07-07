@@ -1,15 +1,6 @@
 import React from 'react';
-import {Application, ApplicationState, getStateIcon} from './Application';
 import Select, {ValueType} from 'react-select';
-
-interface LineProps extends Application {
-  onDelete: (id: number) => void,
-  onStateChange: (id: number, state: ApplicationState) => void
-}
-
-interface LineState {
-  applicationState: ApplicationState
-}
+import {ApplicationState, getStateIcon, LineProps, LineState} from './interfaces';
 
 interface stateOption {
   value: ApplicationState,

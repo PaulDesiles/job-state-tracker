@@ -1,8 +1,9 @@
 import React, {Fragment} from 'react';
 import AddApplication from './AddApplication';
-import ApplicationLine from './ApplicationLine';
-import {Application, ApplicationData, ApplicationState} from './Application';
+import {Application, ApplicationData, ApplicationState} from './interfaces';
 import { CSSTransition, TransitionGroup } from 'react-transition-group';
+import { DragDropContext, Droppable, DropResult } from 'react-beautiful-dnd';
+import OrganizerItem from './OrganizerItem';
 
 const defaultData = [
   {id:0, name: "Space X", link: "https://www.spacex.com/careers/index.html", state: ApplicationState.Sent},
@@ -39,6 +40,7 @@ class Organizer extends React.Component<OrganizerProps, OrganizerState> {
     this.deleteApplication = this.deleteApplication.bind(this);
     this.changeApplicationState = this.changeApplicationState.bind(this);
     this.updateStoredData = this.updateStoredData.bind(this);
+    this.onDragEnd = this.onDragEnd.bind(this);
   }
 
   addApplication(data: ApplicationData) {
@@ -85,28 +87,44 @@ class Organizer extends React.Component<OrganizerProps, OrganizerState> {
     localStorage.setItem('applications', JSON.stringify(this.state.applications));
   }
 
+  onDragEnd(result: DropResult) {
+    if (result.destination) {
+      const applications = [...this.state.applications];
+      const removed = applications.splice(result.source.index, 1)[0];
+      applications.splice(result.destination.index, 0, removed);
+
+      this.setState({
+        applications
+      });
+    }
+  }
+
   render() {
-    const applications = this.state.applications.map(data => 
-      <CSSTransition
-        key={data.id}
-        timeout={{
-          enter: 500,
-          exit: 300
-        }}
-        classNames="item">
-        <ApplicationLine
-          onDelete={this.deleteApplication}
-          onStateChange={this.changeApplicationState}
-          {...data}
-        />
-      </CSSTransition>
-    );
 
     return (
       <Fragment>
-        <TransitionGroup>
-          {applications}
-        </TransitionGroup>
+        <DragDropContext onDragEnd={this.onDragEnd}>
+          <Droppable droppableId="droppable">
+            {(provided, snapshot) => (
+              <div {...provided.droppableProps} ref={provided.innerRef} >
+                <TransitionGroup>
+                  {this.state.applications.map((item, index) => (
+                    <CSSTransition key={item.id} timeout={{ enter: 500, exit: 300 }} classNames="item">
+                      <OrganizerItem 
+                        index={index}
+                        onDelete={this.deleteApplication}
+                        onStateChange={this.changeApplicationState}
+                        {...item}
+                        />
+                    </CSSTransition>
+                  ))}
+                </TransitionGroup>
+                {provided.placeholder}
+              </div>
+            )}
+          </Droppable>
+        </DragDropContext>
+
         <AddApplication onAddApplication={this.addApplication} />
       </Fragment>
     );

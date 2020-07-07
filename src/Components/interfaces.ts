@@ -30,3 +30,16 @@ export interface ApplicationData {
 export interface Application extends ApplicationData {
 	id: number
 }
+
+export interface LineProps extends Application {
+  onDelete: (id: number) => void,
+  onStateChange: (id: number, state: ApplicationState) => void
+}
+
+export interface LineState {
+  applicationState: ApplicationState
+}
+
+export interface OrganizerItemProps extends LineProps {
+  index: number
+}
