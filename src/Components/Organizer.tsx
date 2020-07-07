@@ -2,7 +2,7 @@ import React, {Fragment} from 'react';
 import AddApplication from './AddApplication';
 import {Application, ApplicationData, ApplicationState} from './interfaces';
 import { CSSTransition, TransitionGroup } from 'react-transition-group';
-import { DragDropContext, Droppable, DropResult } from 'react-beautiful-dnd';
+import { DragDropContext, Droppable, DropResult, DraggableLocation } from 'react-beautiful-dnd';
 import OrganizerItem from './OrganizerItem';
 import { v4 as uuidv4 } from 'uuid';
 
@@ -15,8 +15,35 @@ const defaultData = [
 interface OrganizerProps { }
 
 interface OrganizerState {
-  applications: Application[]
+  applications: Application[];
+  archives: Application[];
 }
+
+const reorder = (list: Application[], sourceIndex: number, destIndex: number) => {
+    const result = [...list];
+    const [removed] = result.splice(sourceIndex, 1);
+    result.splice(destIndex, 0, removed);
+
+    return result;
+};
+
+const move = (
+  sourceList: Application[], 
+  destinationList: Application[], 
+  source: DraggableLocation,
+  destination: DraggableLocation) => 
+{
+  const sourceClone = [...sourceList];
+  const destClone = [...destinationList];
+  const [removed] = sourceClone.splice(source.index, 1);
+
+  destClone.splice(destination.index, 0, removed);
+
+  return {
+    source: sourceClone,
+    destination: destClone
+  };
+};
 
 class Organizer extends React.Component<OrganizerProps, OrganizerState> {
   constructor(props: OrganizerProps) {
@@ -30,6 +57,8 @@ class Organizer extends React.Component<OrganizerProps, OrganizerState> {
       localStorage.setItem('applications', JSON.stringify(apps));
     }
 
+    const archives: Application[] = JSON.parse(localStorage.getItem('archives') || '[]');
+
     // transform old ids
     apps.forEach(app => {
       if (typeof(app.id) === 'number') {
@@ -38,7 +67,8 @@ class Organizer extends React.Component<OrganizerProps, OrganizerState> {
     });
 
     this.state = {
-      applications: apps
+      applications: apps,
+      archives
     }
 
     this.addApplication = this.addApplication.bind(this);
@@ -88,18 +118,58 @@ class Organizer extends React.Component<OrganizerProps, OrganizerState> {
 
   updateStoredData() {
     localStorage.setItem('applications', JSON.stringify(this.state.applications));
+    localStorage.setItem('archives', JSON.stringify(this.state.archives));
   }
 
   onDragEnd(result: DropResult) {
-    if (result.destination) {
-      const applications = [...this.state.applications];
-      const removed = applications.splice(result.source.index, 1)[0];
-      applications.splice(result.destination.index, 0, removed);
+    const {source, destination} = result;
 
-      this.setState(
-        { applications },
-        () => this.updateStoredData()
-      );
+    if (destination) {
+
+      const getList = (droppableId: string, state: OrganizerState) => {
+        if (droppableId === "mainDroppable")
+          return state.applications;
+        else
+          return state.archives;
+      };
+
+      const isDestMain = destination.droppableId === "mainDroppable";
+
+      if (source.droppableId === destination.droppableId) {
+        this.setState((state) => {
+          const newArray = reorder(
+            getList(destination.droppableId, state),
+            source.index,
+            destination.index);
+
+          if (isDestMain)
+            return { applications: newArray } as OrganizerState;
+          else
+            return { archives: newArray } as OrganizerState;
+        },
+        () => this.updateStoredData());
+      } else {
+        this.setState(state => {
+          const updatedLists = move(
+            getList(source.droppableId, state),
+            getList(destination.droppableId, state),
+            source,
+            destination);
+
+          if (isDestMain) {
+            return { 
+              applications: updatedLists.destination,
+              archives: updatedLists.source
+            }
+          } else {
+            return { 
+              applications: updatedLists.source,
+              archives: updatedLists.destination
+            }
+          }
+        },
+        () => this.updateStoredData());
+      }
     }
   }
 
@@ -108,26 +178,43 @@ class Organizer extends React.Component<OrganizerProps, OrganizerState> {
     return (
       <Fragment>
         <DragDropContext onDragEnd={this.onDragEnd}>
-          <Droppable droppableId="droppable">
+          <Droppable droppableId="mainDroppable">
             {(provided, snapshot) => (
               <div {...provided.droppableProps} ref={provided.innerRef} >
-                <TransitionGroup>
                   {this.state.applications.map((item, index) => (
-                    <CSSTransition key={item.id} timeout={{ enter: 500, exit: 300 }} classNames="item">
                       <OrganizerItem 
+                        key={item.id}
                         index={index}
                         onDelete={this.deleteApplication}
                         onStateChange={this.changeApplicationState}
                         {...item}
                         />
-                    </CSSTransition>
                   ))}
-                </TransitionGroup>
+                {provided.placeholder}
+              </div>
+            )}
+          </Droppable>
+
+          <i>Archives</i>
+          <Droppable droppableId="archivesDroppable">
+            {(provided, snapshot) => (
+              <div {...provided.droppableProps} ref={provided.innerRef} className="archivesZone">
+                  {this.state.archives.map((item, index) => (
+                      <OrganizerItem 
+                        key={item.id}
+                        index={index}
+                        onDelete={this.deleteApplication}
+                        onStateChange={this.changeApplicationState}
+                        {...item}
+                        />
+                  ))}
                 {provided.placeholder}
               </div>
             )}
           </Droppable>
         </DragDropContext>
+
+
 
         <AddApplication onAddApplication={this.addApplication} />
       </Fragment>
