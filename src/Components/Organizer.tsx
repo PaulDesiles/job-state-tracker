@@ -185,6 +185,10 @@ class Organizer extends React.Component<OrganizerProps, OrganizerState> {
   }
 
   render() {
+    let noContentClasses = "archivesNoContentMessage";
+    if (this.state.archives.length > 0) {
+      noContentClasses += " hidden";
+    }
 
     return (
       <Fragment>
@@ -209,9 +213,11 @@ class Organizer extends React.Component<OrganizerProps, OrganizerState> {
           <CollapseTitle name="Archives" isOpened={this.state.archivesOpened} toggleOpening={this.toggleArchives} />
 
           <Collapse isOpened={this.state.archivesOpened}>
-            <Droppable droppableId="archivesDroppable">
-              {(provided, snapshot) => (
-                <div {...provided.droppableProps} ref={provided.innerRef} className="archivesZone">
+            <div className="archivesZone">
+              <i className={noContentClasses} >drop some items here !</i>
+              <Droppable droppableId="archivesDroppable">
+                {(provided, snapshot) => (
+                  <div {...provided.droppableProps} ref={provided.innerRef} className="archives">
                     {this.state.archives.map((item, index) => (
                         <OrganizerItem 
                           key={item.id}
@@ -221,18 +227,13 @@ class Organizer extends React.Component<OrganizerProps, OrganizerState> {
                           {...item}
                           />
                     ))}
-
-                    {this.state.archives.length === 0 && 
-                      <i className="archivesNoContentMessage">drop some items here !</i>
-                    }
-                  {provided.placeholder}
-                </div>
-              )}
-            </Droppable>
+                    {provided.placeholder}
+                  </div>
+                )}
+              </Droppable>
+            </div>
           </Collapse>
         </DragDropContext>
-
-
 
         <AddApplication onAddApplication={this.addApplication} />
       </Fragment>

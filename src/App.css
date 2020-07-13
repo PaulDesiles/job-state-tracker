@@ -171,12 +171,26 @@ h4 {
   padding: 5px;
   padding-bottom: 1px;
   border-radius: 12px;
+  min-height: 30px;
+  position: relative;
 }
 
 .archivesNoContentMessage {
-  margin: 7px 10px;
+  z-index: 0;
+  position: absolute;
+  top: 9px;
+  left: 15px;
   opacity: 0.5;
-  display: block;
+  transition: opacity 0.8s;
+}
+
+.hidden {
+  opacity: 0;
+}
+
+.archives {
+  position:relative;
+  z-index:1;
 }
 
 .collapseTitle {
@@ -185,12 +199,12 @@ h4 {
 }
 
 .collapseArrow {
-  margin-right: 5px;
+  margin-right: 2px;
   transition: transform 0.5s;
 }
 
 .closedArrow {
-  transform: rotateZ(180deg);
+  transform: rotateZ(-90deg);
 }
 
 .ReactCollapse--collapse {
