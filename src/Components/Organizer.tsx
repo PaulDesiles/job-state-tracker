@@ -7,6 +7,7 @@ import { v4 as uuidv4 } from 'uuid';
 import OrganizerItem from './OrganizerItem';
 import AddApplication from './AddApplication';
 import CollapseTitle from './CollapseTitle';
+import { reorder, move } from '../utils/arrayHelpers';
 
 const defaultData = [
   {id:'9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6a', name: "Space X", link: "https://www.spacex.com/careers/index.html", state: ApplicationState.Sent},
@@ -21,32 +22,6 @@ interface OrganizerState {
   archives: Application[];
   archivesOpened: boolean;
 }
-
-const reorder = (list: Application[], sourceIndex: number, destIndex: number) => {
-    const result = [...list];
-    const [removed] = result.splice(sourceIndex, 1);
-    result.splice(destIndex, 0, removed);
-
-    return result;
-};
-
-const move = (
-  sourceList: Application[], 
-  destinationList: Application[], 
-  source: DraggableLocation,
-  destination: DraggableLocation) => 
-{
-  const sourceClone = [...sourceList];
-  const destClone = [...destinationList];
-  const [removed] = sourceClone.splice(source.index, 1);
-
-  destClone.splice(destination.index, 0, removed);
-
-  return {
-    source: sourceClone,
-    destination: destClone
-  };
-};
 
 class Organizer extends React.Component<OrganizerProps, OrganizerState> {
   constructor(props: OrganizerProps) {
@@ -158,19 +133,19 @@ class Organizer extends React.Component<OrganizerProps, OrganizerState> {
           const updatedLists = move(
             getList(source.droppableId, state),
             getList(destination.droppableId, state),
-            source,
-            destination);
+            source.index,
+            destination.index);
 
           if (isDestMain) {
             return { 
               applications: updatedLists.destination,
               archives: updatedLists.source
-            }
+            };
           } else {
             return { 
               applications: updatedLists.source,
               archives: updatedLists.destination
-            }
+            };
           }
         },
         () => this.updateStoredData());
@@ -185,6 +160,15 @@ class Organizer extends React.Component<OrganizerProps, OrganizerState> {
   }
 
   render() {
+    const applicationMapper = (item: Application, index: number) => (
+      <OrganizerItem 
+        key={item.id}
+        index={index}
+        onDelete={this.deleteApplication}
+        onStateChange={this.changeApplicationState}
+        {...item}
+      />);
+
     let noContentClasses = "archivesNoContentMessage";
     if (this.state.archives.length > 0) {
       noContentClasses += " hidden";
@@ -196,15 +180,7 @@ class Organizer extends React.Component<OrganizerProps, OrganizerState> {
           <Droppable droppableId="mainDroppable">
             {(provided, snapshot) => (
               <div {...provided.droppableProps} ref={provided.innerRef} >
-                  {this.state.applications.map((item, index) => (
-                      <OrganizerItem 
-                        key={item.id}
-                        index={index}
-                        onDelete={this.deleteApplication}
-                        onStateChange={this.changeApplicationState}
-                        {...item}
-                        />
-                  ))}
+                  {this.state.applications.map(applicationMapper)}
                 {provided.placeholder}
               </div>
             )}
@@ -215,18 +191,10 @@ class Organizer extends React.Component<OrganizerProps, OrganizerState> {
           <Collapse isOpened={this.state.archivesOpened}>
             <div className="archivesZone">
               <i className={noContentClasses} >drop some items here !</i>
-              <Droppable droppableId="archivesDroppable">
+              <Droppable droppableId="archivesDroppable" isDropDisabled={!this.state.archivesOpened}>
                 {(provided, snapshot) => (
                   <div {...provided.droppableProps} ref={provided.innerRef} className="archives">
-                    {this.state.archives.map((item, index) => (
-                        <OrganizerItem 
-                          key={item.id}
-                          index={index}
-                          onDelete={this.deleteApplication}
-                          onStateChange={this.changeApplicationState}
-                          {...item}
-                          />
-                    ))}
+                    {this.state.archives.map(applicationMapper)}
                     {provided.placeholder}
                   </div>
                 )}
