@@ -1,10 +1,12 @@
 import React, {Fragment} from 'react';
-import AddApplication from './AddApplication';
 import {Application, ApplicationData, ApplicationState} from './interfaces';
 import { CSSTransition, TransitionGroup } from 'react-transition-group';
 import { DragDropContext, Droppable, DropResult, DraggableLocation } from 'react-beautiful-dnd';
-import OrganizerItem from './OrganizerItem';
+import {Collapse} from 'react-collapse';
 import { v4 as uuidv4 } from 'uuid';
+import OrganizerItem from './OrganizerItem';
+import AddApplication from './AddApplication';
+import CollapseTitle from './CollapseTitle';
 
 const defaultData = [
   {id:'9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6a', name: "Space X", link: "https://www.spacex.com/careers/index.html", state: ApplicationState.Sent},
@@ -17,6 +19,7 @@ interface OrganizerProps { }
 interface OrganizerState {
   applications: Application[];
   archives: Application[];
+  archivesOpened: boolean;
 }
 
 const reorder = (list: Application[], sourceIndex: number, destIndex: number) => {
@@ -68,7 +71,8 @@ class Organizer extends React.Component<OrganizerProps, OrganizerState> {
 
     this.state = {
       applications: apps,
-      archives
+      archives,
+      archivesOpened: false
     }
 
     this.addApplication = this.addApplication.bind(this);
@@ -76,6 +80,7 @@ class Organizer extends React.Component<OrganizerProps, OrganizerState> {
     this.changeApplicationState = this.changeApplicationState.bind(this);
     this.updateStoredData = this.updateStoredData.bind(this);
     this.onDragEnd = this.onDragEnd.bind(this);
+    this.toggleArchives = this.toggleArchives.bind(this);
   }
 
   addApplication(data: ApplicationData) {
@@ -173,6 +178,12 @@ class Organizer extends React.Component<OrganizerProps, OrganizerState> {
     }
   }
 
+  toggleArchives() {
+    this.setState(state => ({
+      archivesOpened: !state.archivesOpened
+    }));
+  }
+
   render() {
 
     return (
@@ -195,23 +206,30 @@ class Organizer extends React.Component<OrganizerProps, OrganizerState> {
             )}
           </Droppable>
 
-          <i>Archives</i>
-          <Droppable droppableId="archivesDroppable">
-            {(provided, snapshot) => (
-              <div {...provided.droppableProps} ref={provided.innerRef} className="archivesZone">
-                  {this.state.archives.map((item, index) => (
-                      <OrganizerItem 
-                        key={item.id}
-                        index={index}
-                        onDelete={this.deleteApplication}
-                        onStateChange={this.changeApplicationState}
-                        {...item}
-                        />
-                  ))}
-                {provided.placeholder}
-              </div>
-            )}
-          </Droppable>
+          <CollapseTitle name="Archives" isOpened={this.state.archivesOpened} toggleOpening={this.toggleArchives} />
+
+          <Collapse isOpened={this.state.archivesOpened}>
+            <Droppable droppableId="archivesDroppable">
+              {(provided, snapshot) => (
+                <div {...provided.droppableProps} ref={provided.innerRef} className="archivesZone">
+                    {this.state.archives.map((item, index) => (
+                        <OrganizerItem 
+                          key={item.id}
+                          index={index}
+                          onDelete={this.deleteApplication}
+                          onStateChange={this.changeApplicationState}
+                          {...item}
+                          />
+                    ))}
+
+                    {this.state.archives.length === 0 && 
+                      <i className="archivesNoContentMessage">drop some items here !</i>
+                    }
+                  {provided.placeholder}
+                </div>
+              )}
+            </Droppable>
+          </Collapse>
         </DragDropContext>
 
 

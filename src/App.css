@@ -103,7 +103,7 @@ h4 {
 }
 
 .deleteButton::after {
-  content: url(cross.svg);
+  content: url(assets/cross.svg);
 }
 
 
@@ -167,8 +167,32 @@ h4 {
 }
 
 .archivesZone {
-  min-height: 20px;
   background: #eee;
   padding: 5px;
   padding-bottom: 1px;
+  border-radius: 12px;
+}
+
+.archivesNoContentMessage {
+  margin: 7px 10px;
+  opacity: 0.5;
+  display: block;
+}
+
+.collapseTitle {
+  margin: 20px 0 5px 0;
+  cursor: pointer;
+}
+
+.collapseArrow {
+  margin-right: 5px;
+  transition: transform 0.5s;
+}
+
+.closedArrow {
+  transform: rotateZ(180deg);
+}
+
+.ReactCollapse--collapse {
+  transition: height 500ms;
 }

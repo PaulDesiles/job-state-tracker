@@ -1,6 +1,6 @@
 {
   "name": "application-tracking",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "private": true,
   "homepage": "https://pauldesiles.github.io/job-state-tracker",
   "dependencies": {
@@ -8,11 +8,13 @@
     "@testing-library/react": "^9.5.0",
     "@testing-library/user-event": "^7.2.1",
     "@types/react-beautiful-dnd": "^13.0.0",
+    "@types/react-collapse": "^5.0.0",
     "@types/react-select": "^3.0.13",
     "@types/react-transition-group": "^4.4.0",
     "@types/uuid": "^8.0.0",
     "react": "^16.13.1",
     "react-beautiful-dnd": "^13.0.0",
+    "react-collapse": "^5.0.1",
     "react-dom": "^16.13.1",
     "react-scripts": "3.4.1",
     "react-select": "^3.1.0",
