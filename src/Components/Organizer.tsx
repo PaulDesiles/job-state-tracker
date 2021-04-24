@@ -51,6 +51,7 @@ class Organizer extends React.Component<OrganizerProps, OrganizerState> {
       archivesOpened: false
     }
 
+    this.retrieveState = this.retrieveState.bind(this);
     this.addApplication = this.addApplication.bind(this);
     this.deleteApplication = this.deleteApplication.bind(this);
     this.changeApplicationState = this.changeApplicationState.bind(this);
