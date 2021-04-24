@@ -8,6 +8,7 @@ import OrganizerItem from './OrganizerItem';
 import AddApplication from './AddApplication';
 import CollapseTitle from './CollapseTitle';
 import { reorder, move } from '../utils/arrayHelpers';
+import Exporter from './Exporter'
 
 const defaultData = [
   {id:'9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6a', name: "Space X", link: "https://www.spacex.com/careers/index.html", state: ApplicationState.Sent},
@@ -17,7 +18,7 @@ const defaultData = [
 
 interface OrganizerProps { }
 
-interface OrganizerState {
+export interface OrganizerState {
   applications: Application[];
   archives: Application[];
   archivesOpened: boolean;
@@ -56,6 +57,13 @@ class Organizer extends React.Component<OrganizerProps, OrganizerState> {
     this.updateStoredData = this.updateStoredData.bind(this);
     this.onDragEnd = this.onDragEnd.bind(this);
     this.toggleArchives = this.toggleArchives.bind(this);
+  }
+
+  retrieveState(state: OrganizerState) {
+    this.setState(
+      state,
+      () => this.updateStoredData()
+    );
   }
 
   addApplication(data: ApplicationData) {
@@ -176,6 +184,7 @@ class Organizer extends React.Component<OrganizerProps, OrganizerState> {
 
     return (
       <Fragment>
+        <Exporter getState={() => this.state} setState={this.retrieveState} />
         <DragDropContext onDragEnd={this.onDragEnd}>
           <Droppable droppableId="mainDroppable">
             {(provided, snapshot) => (
