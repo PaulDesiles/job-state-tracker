@@ -31,13 +31,14 @@ const Exporter: FunctionComponent<ExporterProps> =
 
     let importJson: (f: FileList | null) => void =
         function (files: FileList | null) {
-            if (files) {
+            if (files && files[0]) {
+                console.log('start import');
                 const file = files[0];
-                if (file) {
-                    const reader = new FileReader();
-                    reader.onload = fileLoaded;
-                    reader.readAsText(file);
-                }
+                const reader = new FileReader();
+                reader.onload = fileLoaded;
+                reader.readAsText(file);
+            } else {
+                console.log('empty file : abort import');
             }
         };
     
@@ -47,9 +48,14 @@ const Exporter: FunctionComponent<ExporterProps> =
                 const fileContent = evt?.target?.result;
                 if (fileContent) {
                     const newState = JSON.parse(fileContent as string);
-                    if (newState && newState.applications && newState.archives && newState.archivesOpened) {
+                    if (newState && newState.applications && newState.archives) {
                         setState(newState);
+                        console.log('imported');
+                    } else {
+                        console.log('invalid content');
                     }
+                } else {
+                    console.log('null target content');
                 }
             } catch (error) {
                 console.log(error);
